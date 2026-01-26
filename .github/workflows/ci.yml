@@ -68,9 +68,13 @@ jobs:
         env:
           AUTHOR_TESTING: 1
           RELEASE_TESTING: 1
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           perl Makefile.PL
           make
+          # cpanm --notest Devel::Cover
+          # cpanm --notest Devel::Cover::Report::Coveralls
+          cover -v
+          perl -MDevel::Cover::Report::Coveralls -E 'say $Devel::Cover::Report::Coveralls::VERSION'
           cover -test -report coveralls
-
 
