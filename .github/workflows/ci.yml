@@ -61,7 +61,7 @@ jobs:
         AUTHOR_TESTING: 1
         RELEASE_TESTING: 1
       run: |
-        cpanm Devel::Cover
+        cpanm --notest Devel::Cover
         cover -test
 
 
