@@ -12,17 +12,22 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runner: [ubuntu-latest, macos-latest, windows-latest]
-        perl: [ '5.30', '5.36' ]
-        exclude:
-          - runner: windows-latest
-            perl: '5.36'
+        runner:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        perl:
+          - '5.30'
+          - '5.42'
+        #exclude:
+        #  - runner: windows-latest
+        #    perl: '5.36'
 
     runs-on: ${{matrix.runner}}
     name: OS ${{matrix.runner}} Perl ${{matrix.perl}}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v6
 
     - name: Set up perl
       uses: shogo82148/actions-setup-perl@v1
@@ -41,24 +46,17 @@ jobs:
         # --with-configure
         # --with-recommends, --with-suggests
 
-    - name: Show Errors on Windows
-      if:  ${{ failure() && matrix.runner == 'windows-latest' }}
-      run: |
-         ls -l C:/Users/
-         ls -l C:/Users/RUNNER~1/
-         cat C:/Users/runneradmin/.cpanm/work/*/build.log
-
-    - name: Show Errors on Ubuntu
-      if:  ${{ failure() && startsWith( matrix.runner, 'ubuntu-')}}
-      run: |
-         cat /home/runner/.cpanm/work/*/build.log
-
-    - name: Show Errors on OSX
-      if:  ${{ failure() && startsWith( matrix.runner, 'macos-')}}
-      run: |
-         cat  /Users/runner/.cpanm/work/*/build.log
-
     - name: Run tests
+      env:
+        AUTHOR_TESTING: 1
+        RELEASE_TESTING: 1
+      run: |
+        perl Makefile.PL
+        make
+        make test
+
+    - name: Generate test coverage
+      if: matrix.runner == 'ubuntu-latest' && matrix.perl == '5.42'
       env:
         AUTHOR_TESTING: 1
         RELEASE_TESTING: 1
