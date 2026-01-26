@@ -8,7 +8,7 @@ on:
 #    - cron: '42 5 * * *'
 
 jobs:
-  test:
+  tests:
     strategy:
       fail-fast: false
       matrix:
@@ -55,13 +55,20 @@ jobs:
         make
         make test
 
-    - name: Generate test coverage
-      if: ${{ matrix.runner == 'ubuntu-latest' && matrix.perl == '5.42' }}
-      env:
-        AUTHOR_TESTING: 1
-        RELEASE_TESTING: 1
-      run: |
-        cpanm --verbose Devel::Cover
-        cover -test
+  coverage:
+    runs-on: ubuntu-latest
+    needs: tests
+    name: Test Coverage
+
+    container:
+      image: perldocker/perl-tester:5.42
+    steps:
+      - uses: actions/checkout@v6
+      - name: Generate test coverage
+        env:
+          AUTHOR_TESTING: 1
+          RELEASE_TESTING: 1
+        run: |
+          cover -test
 
 
