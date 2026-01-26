@@ -14,7 +14,7 @@ jobs:
       matrix:
         runner:
           - ubuntu-latest
-          - macos-latest
+          #- macos-latest
           #- windows-latest
         perl:
           - '5.30'
@@ -56,12 +56,12 @@ jobs:
         make test
 
     - name: Generate test coverage
-      if: matrix.runner == 'ubuntu-latest' && matrix.perl == '5.42'
+      if: ${{ matrix.runner == 'ubuntu-latest' && matrix.perl == '5.42' }}
       env:
         AUTHOR_TESTING: 1
         RELEASE_TESTING: 1
       run: |
-        cpanm --notest Devel::Cover
+        cpanm --verbose Devel::Cover
         cover -test
 
 
