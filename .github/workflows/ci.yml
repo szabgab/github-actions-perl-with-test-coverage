@@ -71,6 +71,6 @@ jobs:
         run: |
           perl Makefile.PL
           make
-          cover -test
+          cover -test -report coveralls
 
 
