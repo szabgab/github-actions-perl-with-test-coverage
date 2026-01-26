@@ -13,7 +13,6 @@ WriteMakefile
     LICENSE       => 'perl',
     PREREQ_PM     => {
         'File::Basename' => '0',
-        'Math::RPN' => '0',
     },
     TEST_REQUIRES => {
         'Test::More' => '0.47'
