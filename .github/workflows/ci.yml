@@ -64,6 +64,11 @@ jobs:
       image: perldocker/perl-tester:5.42
     steps:
       - uses: actions/checkout@v6
+      - name: Report versions
+        run: |
+          cover -v
+          perl -MDevel::Cover::Report::Coveralls -E 'say $Devel::Cover::Report::Coveralls::VERSION'
+
       - name: Generate test coverage
         env:
           AUTHOR_TESTING: 1
@@ -74,7 +79,5 @@ jobs:
           make
           # cpanm --notest Devel::Cover
           # cpanm --notest Devel::Cover::Report::Coveralls
-          cover -v
-          perl -MDevel::Cover::Report::Coveralls -E 'say $Devel::Cover::Report::Coveralls::VERSION'
           cover -test -report coveralls
 
